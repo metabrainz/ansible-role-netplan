@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Ensure netplan is installed
+      stat:
+        path: /usr/share/netplan/netplan.script
+      register: result
+      changed_when: false
+      failed_when: result.stat.isreg is not defined or not result.stat.isreg
+
+    - name: Check /etc/netplan/ansible.yaml is valid
+      copy:
+        src: files/ansible.yaml
+        dest: /etc/netplan/ansible.yaml
+        mode: 0644
+      check_mode: true
+      register: _etc_netplan_ansible
+
+    - name: Fail if /etc/netplan/ansible.yaml is invalid # noqa no-handler
+      fail:
+        msg: /etc/netplan/ansible.yaml differs from files/ansible.yaml
+      when: _etc_netplan_ansible.changed

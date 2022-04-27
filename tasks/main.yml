@@ -1,0 +1,55 @@
+---
+- name: Combine Netplan configuration variables
+  set_fact:
+    _netplan_config:  >-
+      {{ netplan_configuration |
+      combine(netplan_group_configuration, recursive=True) |
+      combine(netplan_host_configuration, recursive=True) }}
+
+- name: Ensure a Netplan configuration is defined
+  fail:
+    msg: Cowardly refusing to proceed with an empty configuration
+  when: not _netplan_config|d()
+
+- name: Ensure physical interface names defined in the configuration are valid
+  fail:
+    msg: "Interface {{ item }} was not found on this server"
+  loop: "{{ _netplan_config | get_netplan_interfaces | select('match', '^e[a-z0-9]+$') | sort }}"
+  when: netplan_validate_interfaces|bool and item not in ansible_interfaces
+
+- name: Install Netplan packages
+  apt:
+    name: "{{ netplan_packages }}"
+    state: present
+
+- name: Find non-Ansible Netplan configuration files
+  find:
+    paths:
+      - /etc/netplan
+    patterns:
+      - "*.yaml"
+      - "*.yml"
+    excludes:
+      - "{{ netplan_configuration_file|basename }}"
+  register: _netplan_unmanaged
+  when: netplan_delete_unmanaged_configuration
+
+- name: Delete non-Ansible Netplan configuration files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ _netplan_unmanaged.files }}"
+  when: netplan_delete_unmanaged_configuration
+
+- name: Install Netplan configuration
+  template:
+    src: configuration.yaml.j2
+    dest: "{{ netplan_configuration_file }}"
+    mode: "{{ netplan_configuration_file_mode }}"
+    backup: "{{ netplan_configuration_backup }}"
+  notify: apply netplan configuration
+
+# flush handlers to ensure that the network configuration is updated even if a
+# subsequent task in the play fails
+- name: Flush handlers to ensure Netplan configuration is applied
+  meta: flush_handlers

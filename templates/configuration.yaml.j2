@@ -1,0 +1,4 @@
+---
+# {{ ansible_managed }}
+
+{{ _netplan_config|render_netplan_config(version=netplan_configuration_version, renderer=netplan_configuration_renderer) }}

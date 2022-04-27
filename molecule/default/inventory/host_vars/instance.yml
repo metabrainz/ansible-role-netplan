@@ -1,0 +1,18 @@
+---
+network_configuration:
+  external:
+    interface: eth0
+    addresses:
+      - 42.42.42.42/24
+    gateway: 42.42.42.1
+    nameservers:
+      - 1.1.1.1
+      - 9.9.9.9
+
+netplan_host_configuration:
+  ethernets:
+    eth1:
+      addresses:
+        - 42.42.42.42/24
+    empty_test:
+      _interface: eth3

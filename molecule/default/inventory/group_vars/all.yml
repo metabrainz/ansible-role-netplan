@@ -1,0 +1,15 @@
+---
+netplan_validate_interfaces: false
+
+netplan_configuration:
+  ethernets:
+    external:
+      _interface: "{{ network_configuration.external.interface }}"
+      addresses:
+        - "{{ network_configuration.external.addresses }}"
+      routes:
+        - to: 0.0.0.0/0
+          via: "{{ network_configuration.external.gateway }}"
+          on-link: true
+      nameservers:
+        addresses: "{{ network_configuration.external.nameservers }}"

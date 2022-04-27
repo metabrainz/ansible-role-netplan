@@ -1,0 +1,4 @@
+---
+- name: Apply Netplan configuration
+  listen: apply netplan configuration
+  command: "{{ netplan_apply_handler_command }}"

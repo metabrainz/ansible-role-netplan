@@ -1,0 +1,18 @@
+---
+netplan_packages:
+  - netplan.io
+netplan_configuration_file: "/etc/netplan/ansible.yaml"
+netplan_configuration_file_mode: "0644"
+netplan_configuration_backup: false
+netplan_validate_interfaces: true
+netplan_delete_unmanaged_configuration: true
+
+netplan_configuration_version: 2
+netplan_configuration_renderer: networkd
+#netplan_configuration:
+#  ethernets:
+#    enp1s0:
+#      dhcp4: true
+netplan_configuration: {}
+netplan_group_configuration: {}
+netplan_host_configuration: {}

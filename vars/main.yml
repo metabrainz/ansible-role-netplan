@@ -1,0 +1,2 @@
+---
+netplan_apply_handler_command: netplan apply
