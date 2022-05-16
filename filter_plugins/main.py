@@ -1,7 +1,13 @@
 from collections.abc import Mapping
 from copy import deepcopy
 
-from ansible.errors import AnsibleFilterTypeError
+try:
+    # AnsibleFilterTypeError was added in 2.10
+    from ansible.errors import AnsibleFilterTypeError
+except ImportError:
+    from ansible.errors import AnsibleFilterError
+    AnsibleFilterTypeError = AnsibleFilterError
+
 from ansible.plugins.filter.core import flatten, to_nice_yaml
 
 
