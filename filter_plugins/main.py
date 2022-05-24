@@ -8,7 +8,7 @@ except ImportError:
     from ansible.errors import AnsibleFilterError
     AnsibleFilterTypeError = AnsibleFilterError
 
-from ansible.plugins.filter.core import flatten, to_nice_yaml
+from ansible.plugins.filter.core import flatten, to_bool, to_nice_yaml
 
 
 def render_netplan_config(config, version=2, renderer=None):
@@ -46,6 +46,12 @@ def render_netplan_config(config, version=2, renderer=None):
 
             # skip this definition if it is empty after removing the `_interface` key
             if not new_definition:
+                continue
+
+            # support a special key named "skip_when" to enable a definition to be skipped based on
+            # certain conditions
+            skip_when = to_bool(new_definition.pop("skip_when", False))
+            if skip_when:
                 continue
 
             addresses = new_definition.pop("addresses", None)

@@ -13,6 +13,20 @@ netplan_host_configuration:
   ethernets:
     eth1:
       addresses:
-        - 42.42.42.42/24
+        - 24.2.24.2/24
     empty_test:
       _interface: eth3
+  vlans:
+    internal:
+      _interface: vlan0
+      id: 42
+      link: "{{ network_configuration.external.interface|d() }}"
+      addresses:
+        - 10.42.42.42/24
+    skip_when_test:
+      _interface: vlan1
+      id: 5
+      link: eth1
+      addresses:
+        - 10.5.5.5/24
+      skip_when: "{{ network_configuration.external.interface != 'eth1' }}"

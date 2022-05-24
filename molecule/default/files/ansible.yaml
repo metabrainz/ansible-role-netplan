@@ -16,6 +16,12 @@ network:
         via: 42.42.42.1
     eth1:
       addresses:
-      - 42.42.42.42/24
+      - 24.2.24.2/24
   renderer: networkd
   version: 2
+  vlans:
+    vlan0:
+      addresses:
+      - 10.42.42.42/24
+      id: 42
+      link: eth0
