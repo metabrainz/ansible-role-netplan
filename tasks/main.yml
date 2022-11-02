@@ -30,7 +30,7 @@
       - "*.yaml"
       - "*.yml"
     excludes:
-      - "{{ netplan_configuration_file|basename }}"
+      - "{{ netplan_configuration_file | basename }}"
   register: _netplan_unmanaged
   when: netplan_delete_unmanaged_configuration
 

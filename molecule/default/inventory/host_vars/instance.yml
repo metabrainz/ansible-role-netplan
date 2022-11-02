@@ -20,7 +20,7 @@ netplan_host_configuration:
     internal:
       _interface: vlan0
       id: 42
-      link: "{{ network_configuration.external.interface|d() }}"
+      link: "{{ network_configuration.external.interface | d() }}"
       addresses:
         - 10.42.42.42/24
     skip_when_test:
