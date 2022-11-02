@@ -6,6 +6,7 @@ name: CI
   push:
   schedule:
     - cron: "58 19 * * 5"
+  workflow_dispatch:
 
 defaults:
   run:
